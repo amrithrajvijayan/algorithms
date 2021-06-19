@@ -75,8 +75,8 @@ public class LongestCommonSubstring {
 	public static void main(String[] args) {
 
 		String a = "abcdefaakalalkh";
-		String b = "mmnnommndefaaononnnn";
-		// System.out.println(findLongestCommonSubstringRecursive(a,b)); // defaa 5
+		String b = "ammnnommndefaaononnnn";
+		System.out.println(findLongestCommonSubstringRecursive(a,b)); // defaa 5
 		System.out.println(findLongestCommonSubstringDp(a, b));
 	}
 

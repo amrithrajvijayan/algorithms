@@ -6,7 +6,7 @@ public class RemoveAllInstancesOfAValue {
 
 	public static void main(String[] args) {
 		int[] arr = {3 ,6, 8, 3, 0, 4, 2, 9, 4, 3, 5};
-		int val = 3;
+		int val = 8;
 		removeAllInstances(arr, val);
 
 		System.out.println("Final array \n" + Arrays.toString(arr));

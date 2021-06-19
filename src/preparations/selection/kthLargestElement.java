@@ -74,11 +74,11 @@ public class kthLargestElement {
 	
 	public static void main(String[] args) {
 		int[] arr = {6, 2, 8, 3, 5, 1, 18};
-		int k = 3;
+		int k = 2;
 		
 		System.out.println(findKthLargestElementUsingPriorityQueue(arr, k));
 		
-		System.out.println(findKthLargestElementUsingQuickSelect(arr, k));
+		//System.out.println(findKthLargestElementUsingQuickSelect(arr, k));
 	}
 
 }

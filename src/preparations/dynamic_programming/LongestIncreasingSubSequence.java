@@ -1,147 +1,57 @@
 package preparations.dynamic_programming;
 
-import java.util.ArrayList;
 import java.util.*;
 
-public class LongestIncreasingSubSequence {
+/*
+  Given a non-empty array of integers, write a function that returns the longest
+  strictly-increasing subsequence in the array.
 
-	// Recursive LIS
-	private static int recursiveLis(int[] arr, int index) {
-		if (index < 0) {
-			return 1;
-		} 
-		int count =  1;
-		for (int j=0; j<index; j++) {
-			int c = recursiveLis(arr, j);
-			if (arr[j] < arr[index]) {
-				count = Math.max(count, c+1);
-			}
+  A subsequence of an array is a set of numbers that aren't necessarily adjacent
+  in the array but that are in the same order as they appear in the array. For
+  instance, the numbers <span>[1, 3, 4]</span> form a subsequence of the array
+  <span>[1, 2, 3, 4]</span>, and so do the numbers <span>[2, 4]</span>. Note
+  that a single number in an array and the array itself are both valid
+  subsequences of the array.
+*/
+
+public class LongestIncreasingSubSequence {
+	public static List<Integer> longestIncreasingSubsequence(int[] array) {
+		int[] sequences = new int[array.length];
+		int[] indices = new int[array.length + 1];
+		Arrays.fill(indices, Integer.MIN_VALUE);
+
+		int length = 0;
+		for (int i = 0; i < array.length; i++) {
+			int num = array[i];
+			int newLength = binarySearch(1, length, indices, array, num);
+			sequences[i] = indices[newLength - 1];
+			indices[newLength] = i;
+			length = Math.max(length, newLength);
 		}
-		return count;
+
+		return buildSequence(array, sequences, indices[length]);
 	}
-	
-	// DP LIS  O(n^2)
-	private static int dpLis(int[] arr) {
-		
-		int[] dp = new int[arr.length+1];
-		Arrays.fill(dp,  1);
-		dp[0] = 0;
-		int max = 0;
-		for (int i=1; i<=arr.length; i++) {
-			for (int j=1; j<i; j++) {
-				if (arr[j-1] < arr[i-1])
-					dp[i] = Math.max(dp[i], dp[j] + 1);
-					max = Math.max(max,  dp[i]);
-			}
+
+	public static int binarySearch(int startIndex, int endIndex, int[] indices, int[] array, int num) {
+		if (startIndex > endIndex) {
+			return startIndex;
 		}
-		return max;
-	}
-	
-	/*
-	indexes[] : At each position, the index of the element which is the last element of sequence with length = index
-	sequence[]: 
-		*/
-	private static Integer[] efficientDp(int[] arr) {
-		
-		int[] indexs = new int[arr.length+1];
-		int[] sequence = new int[arr.length+1];
-		Arrays.fill(sequence,  -1);
-		Arrays.fill(indexs,  -1);
-		int length=0;
-		for (int i=0; i<arr.length; i++) {
-			int num = arr[i];
-			int newLength = binarySearch(num, arr, indexs, 1, length);
-			indexs[newLength] = i;
-			sequence[i] = indexs[newLength-1];
-			length = Math.max(length,  newLength);
-		}
-		
-		return backtrack(arr, indexs, sequence, indexs[length]);
-	}
-	
-	private static Integer[] backtrack(int[] arr, int[] indexs, int[] sequence, int index) {
-		List<Integer> list = new ArrayList<>();
-		
-		while(index >=0) {
-			list.add(arr[index]);
-			index = sequence[index];
-		}
-		Collections.reverse(list);
-		Integer[] retArray = new Integer[list.size()];
-		retArray = list.toArray(retArray);
-		return retArray;
-	}
-	
-	
-	
-	
-	
-	private static int binarySearch(int  value, int[] arr, int[] indexs, int i, int j) {
-		if (i>j) {
-			return i;
-		}
-		int mid = (i+j)/2;
-		if (arr[indexs[i]] < value) {
-			return binarySearch(value, arr, indexs, mid+1, j);
+		int middleIndex = (startIndex + endIndex) / 2;
+		if (array[indices[middleIndex]] < num) {
+			startIndex = middleIndex + 1;
 		} else {
-			return binarySearch(value, arr, indexs, i, mid-1);			
+			endIndex = middleIndex - 1;
 		}
-		
+		return binarySearch(startIndex, endIndex, indices, array, num);
 	}
-	
-	
-	
-	
-	public static void main(String[] args) {
-		int[] arr = {8, 10, 2, 7, 20, 10, 22, 1, 50};
-		//int[] arr = {2, 3, 1};
-		//System.out.println(recursiveLis(arr, arr.length-1));
-		//System.out.println(dpLis(arr));
-		
-		//System.out.println(Arrays.toString(efficientDp(arr)));
-		System.out.println(("\nMaxCount = " + rewrittenDP(arr)));
-		
-	}
-	
-	
-	private static int rewrittenDP(int[] inputs) {
-		int maxCount = 0;
-		
-		int[] dp = new int[inputs.length+1];
-		Arrays.fill(dp, 1);
-		dp[0] = 0;
-		int[] path = new int[inputs.length+1];
-		Arrays.fill(path, -1);
-		int maxCountLoc = -1;
-		
-		for (int i=2; i<=inputs.length; i++) {
-			for (int j=1; j<i; j++) {
-				if (inputs[j-1] < inputs[i-1]) {
-					if (dp[i] < dp[j] + 1) {
-						dp[i] = Math.max(dp[i], dp[j] + 1);
-						if (maxCount < dp[i]) {
-							maxCount = Math.max(maxCount, dp[i]);
-							maxCountLoc = i;
-						}
-						path[i] = j;
-					}
-				}
-			}
-			
+
+	public static List<Integer> buildSequence(int[] array, int[] sequences, int currentIndex) {
+		List<Integer> sequence = new ArrayList<Integer>();
+		while (currentIndex != Integer.MIN_VALUE) {
+			sequence.add(0, array[currentIndex]);
+			currentIndex = sequences[currentIndex];
 		}
-		//System.out.println(Arrays.toString(path));
-		ArrayList<Integer> lst = new ArrayList<Integer>();
-		while(maxCountLoc > 0) {
-			//System.out.print(inputs[maxCountLoc-1] + " ");
-			lst.add(inputs[maxCountLoc-1]);
-			maxCountLoc = path[maxCountLoc];
-		}
-		Collections.reverse(lst);
-		System.out.println(Arrays.toString(lst.toArray()));
-		return maxCount;
+		return sequence;
 	}
-	
-	
-	
 
 }

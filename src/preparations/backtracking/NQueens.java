@@ -1,4 +1,6 @@
 package preparations.backtracking;
+// The time complexity of this problem is n! 
+// n * (n-2) * (n-4) * (n-6) ....etc
 
 /*
 The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
@@ -84,7 +86,10 @@ public class NQueens {
 
 	public static void main(String[] args) {
 		int n = 10;
-
+		solveNQueens(n);
+	}
+	
+	private static void solveNQueens(int n) {
 		String[][] board = new String[n][n];
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
@@ -101,8 +106,9 @@ public class NQueens {
 		placeQueensEfficiently(board, n, 0); // O(n^2)
 		System.out.println(System.currentTimeMillis());
 
-		printBoard(board);
+		printBoard(board);	
 	}
+	
 
 	static int[] differenceArray;
 	static int[] sumArray;
